@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Hygiene + tooling check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collector script compiles
+        run: python -m py_compile tools/collect_metrics.py
+      - name: No em dashes in tracked text
+        run: |
+          if git grep -n $'—' -- '*.md' '*.py' ; then
+            echo "found em dashes; use periods, commas, or parentheses"; exit 1
+          fi
+      - name: No hiring/portfolio framing
+        run: |
+          if git grep -niE 'resume|recruiter|hiring|portfolio bait' -- '*.md' ; then
+            echo "found framing words; keep the neutral Heliosnet domain"; exit 1
+          fi
