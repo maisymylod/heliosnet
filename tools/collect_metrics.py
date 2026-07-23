@@ -33,7 +33,7 @@ SOURCES = {
     ),
     "constellation-stream": (
         "artifacts/bench.json",
-        "make bench-big",
+        "make bench",
         lambda d: (
             f"{round(d['throughput']['throughput_rows_per_s']):,} rec/s, "
             f"p99 {round(d['query_latency']['p99_ms'], 2)} ms "
